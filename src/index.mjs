@@ -1,13 +1,15 @@
 import express from 'express';
 import routes from './routes/index.mjs';
+import cookieParser from 'cookie-parser';
 
 const app = express();
+app.use(cookieParser('helloworld'));
 app.use(routes);
 
 const PORT = process.env.PORT || 3000;
 
 app.get('/', (request, response) => {
-  response.cookie('hello', 'world', { maxAge: 60000 });
+  response.cookie('hello', 'world', { maxAge: 60000 * 60 * 2, signed: true });
   response.status(200).send({ mssg: 'Hello' });
 });
 
