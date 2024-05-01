@@ -1,14 +1,28 @@
 import express from 'express';
 import routes from './routes/index.mjs';
 import cookieParser from 'cookie-parser';
+import session from 'express-session';
 
 const app = express();
 app.use(cookieParser('helloworld'));
+app.use(
+  session({
+    secret: 'carlos the dev',
+    saveUninitialized: false,
+    resave: false,
+    cookie: {
+      maxAge: 60000 * 60,
+    },
+  })
+);
 app.use(routes);
 
 const PORT = process.env.PORT || 3000;
 
 app.get('/', (request, response) => {
+  console.log(request.session);
+  console.log(request.sessionID);
+  request.session.visited = true;
   response.cookie('hello', 'world', { maxAge: 60000 * 60 * 2, signed: true });
   response.status(200).send({ mssg: 'Hello' });
 });

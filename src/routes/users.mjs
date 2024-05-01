@@ -20,6 +20,18 @@ router.get(
     .isLength({ min: 3, max: 10 })
     .withMessage('Must be at leas 3-10 characters'),
   (req, res) => {
+    console.log(req.session);
+    console.log(req.session.id);
+    console.log(
+      req.sessionStore.get(req.session.id, (err, sessionData) => {
+        if (err) {
+          console.log(err);
+          throw Error;
+        }
+        console.log('+++sessionData+++', sessionData);
+      })
+    );
+    console.log(req.sessionID);
     const {
       query: { filter, value },
     } = req;
