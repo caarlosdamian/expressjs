@@ -2,6 +2,8 @@ import express from 'express';
 import routes from './routes/index.mjs';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
+import { users } from './utils/constants.mjs';
+import { body } from 'express-validator';
 
 const app = express();
 app.use(cookieParser('helloworld'));
@@ -15,7 +17,7 @@ app.use(
     },
   })
 );
-app.use(routes);
+app.use(routes, express.json());
 
 const PORT = process.env.PORT || 3000;
 
@@ -25,6 +27,47 @@ app.get('/', (request, response) => {
   request.session.visited = true;
   response.cookie('hello', 'world', { maxAge: 60000 * 60 * 2, signed: true });
   response.status(200).send({ mssg: 'Hello' });
+});
+
+app.post('/api/auth', (req, res) => {
+  const {
+    body: { username, password },
+  } = req;
+
+  const findUser = users.find((user) => username === user.username);
+  if (!findUser || findUser.password !== password)
+    return res.status(401).send({ msg: 'Bad credentials' });
+  req.session.user = findUser;
+  return res.status(200).send(findUser);
+});
+
+app.get('/api/auth/status', (req, res) => {
+  req.sessionStore.get(req.sessionID, (err, session) => {
+    console.log(session);
+  });
+  return req.session.user
+    ? res.status(200).send(req.session.user)
+    : res.status(401).send({ msg: 'Bad credentials' });
+});
+
+app.post('/api/cart', (req, res) => {
+  if (!req.session.user) res.status(401).send({ msg: 'Bad credentials' });
+  const { body: item } = req;
+
+  const { cart } = req.session;
+  if (cart) {
+    cart.push(item);
+  } else {
+    req.session.cart = [item];
+  }
+  return res.status(201).send(item);
+});
+
+app.get('/api/cart', (req, res) => {
+  if (!req.session.user) res.status(401).send({ msg: 'Bad credentials' });
+
+  const { cart } = req.session;
+  return res.status(200).send(cart ?? []);
 });
 
 app.listen(PORT, () => {
