@@ -8,6 +8,7 @@ import {
   validationResult,
 } from 'express-validator';
 import { resolvedIndexByUserId } from '../utils/middlewares.mjs';
+import { User } from '../mongosse/schemas/user.mjs';
 
 const router = Router();
 
@@ -47,14 +48,16 @@ router.get(
 router.post(
   '/api/users',
   checkSchema(createUserValidationSchema),
-  (req, res) => {
-    const result = validationResult(req);
-    if (!result.isEmpty())
-      return res.status(400).send({ errors: result.array() });
-    const body = matchedData(req);
-    const newUser = { id: users[users.length - 1].id + 1, ...body };
-    users.push(newUser);
-    res.status(201).send(newUser);
+  async (req, res) => {
+    const { body } = req;
+    const newUser = new User(body);
+    try {
+      const savedUser = await newUser.save();
+      return res.status(201).send(savedUser);
+    } catch (error) {
+      console.log(error);
+      return res.sendStatus(400);
+    }
   }
 );
 

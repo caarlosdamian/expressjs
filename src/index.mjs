@@ -3,9 +3,15 @@ import routes from './routes/index.mjs';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import passport from 'passport';
+import mongoose from 'mongoose';
 import './strategies/local-strategy.mjs';
 
 const app = express();
+
+mongoose
+  .connect(process.env.MONGODB_URL)
+  .then(() => console.log('Connected to Database'))
+  .catch((err) => console.log(err));
 app.use(express.json());
 app.use(cookieParser('helloworld'));
 app.use(
