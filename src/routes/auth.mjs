@@ -16,7 +16,6 @@ const router = Router();
 // });
 
 router.post('/api/auth', passport.authenticate('local'), (req, res) => {
-  console.log('request', req.user);
   return res.status(200).send(req.user);
 });
 

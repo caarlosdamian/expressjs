@@ -23,4 +23,9 @@ export const createUserValidationSchema = {
       errorMessage: 'Must be string',
     },
   },
+  password: {
+    notEmpty: {
+      errorMessage: 'Must not be empty',
+    },
+  },
 };
