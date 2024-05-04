@@ -1,6 +1,5 @@
 import passport from 'passport';
 import { Strategy } from 'passport-local';
-import { users } from '../utils/constants.mjs';
 import { User } from '../mongosse/schemas/user.mjs';
 import { comparePassword } from '../utils/helpers.mjs';
 
