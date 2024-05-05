@@ -10,6 +10,7 @@ import {
 import { resolvedIndexByUserId } from '../utils/middlewares.mjs';
 import { User } from '../mongosse/schemas/user.mjs';
 import { hashPassword } from '../utils/helpers.mjs';
+import { getUserByIdHandler } from '../handlers/users.mjs';
 
 const router = Router();
 
@@ -77,12 +78,7 @@ router.get('/api/users', (req, res) => {
   return res.send(users);
 });
 
-router.get('/api/users/:id', resolvedIndexByUserId, (req, res) => {
-  const { userIndex } = req;
-  const user = users[userIndex];
-  if (!user) return res.sendStatus(404);
-  return res.status(200).send(user);
-});
+router.get('/api/users/:id', resolvedIndexByUserId, getUserByIdHandler);
 
 //PUT
 router.put('/api/users/:id', resolvedIndexByUserId, (req, res) => {
