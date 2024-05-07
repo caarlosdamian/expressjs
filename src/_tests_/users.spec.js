@@ -100,15 +100,15 @@ describe('create users', () => {
     });
   });
 
-  // it('send status of 400 when database fails to save user', async () => {
-  //   jest.spyOn(validator, 'validationResult').mockImplementationOnce(() => ({
-  //     isEmpty: jest.fn(() => true),
-  //   }));
-  //   const saveMethod = jest
-  //     .spyOn(User.prototype, 'save')
-  //     .mockImplementationOnce(() => Promise.reject('Failed to save user'));
-  //   await createUserHandler(mockRequest, mockResponse);
-  //   expect(saveMethod).toHaveBeenCalled();
-  //   expect(mockResponse.sendStatus).toHaveBeenCalledWith(400);
-  // });
+  it('send status of 400 when database fails to save user', async () => {
+    jest.spyOn(validator, 'validationResult').mockImplementationOnce(() => ({
+      isEmpty: jest.fn(() => true),
+    }));
+    const saveMethod = jest
+      .spyOn(User.prototype, 'save')
+      .mockImplementationOnce(() => Promise.reject('Failed to save user'));
+    await createUserHandler(mockRequest, mockResponse);
+    expect(saveMethod).toHaveBeenCalled();
+    expect(mockResponse.sendStatus).toHaveBeenCalledWith(400);
+  });
 });
