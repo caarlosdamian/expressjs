@@ -20,9 +20,9 @@ router.post('/api/auth', passport.authenticate('local'), (req, res) => {
 });
 
 router.get('/api/auth/status', (req, res) => {
-  req.sessionStore.get(req.sessionID, (err, session) => {
-    console.log(session);
-  });
+  // req.sessionStore.get(req.sessionID, (err, session) => {
+  //   console.log(session);
+  // });
   return req.user
     ? res.status(200).send(req.user)
     : res.status(401).send({ msg: 'Bad credentials' });
